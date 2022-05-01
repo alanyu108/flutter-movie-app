@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:movie_app/screens/signInScreen.dart';
 import 'homepage.dart';
 import 'firebase_options.dart'; // generated via `flutterfire` CLI
 
@@ -15,6 +16,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const HomePage();
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.red,
+      ),
+      initialRoute: "/",
+      routes: {
+        "/": (context) => const HomePage(),
+        "/login": (context) => const SignInScreen()
+      },
+    );
   }
 }

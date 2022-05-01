@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/provider/google_provider.dart';
+import 'package:movie_app/provider/googleProvider.dart';
 import 'package:provider/provider.dart';
 
 class SignInWidget extends StatelessWidget {
