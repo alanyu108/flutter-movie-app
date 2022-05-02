@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:movie_app/screens/signInScreen.dart';
 import 'homepage.dart';
 import 'firebase_options.dart'; // generated via `flutterfire` CLI
+import 'screens/addReviewScreen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +25,8 @@ class MyApp extends StatelessWidget {
       initialRoute: "/",
       routes: {
         "/": (context) => const HomePage(),
-        "/login": (context) => const SignInScreen()
+        "/login": (context) => const SignInScreen(),
+        "/review": (context) => reviewScreen()
       },
     );
   }

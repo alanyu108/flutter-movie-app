@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:movie_app/screens/addReviewScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:movie_app/provider/googleProvider.dart';
 
@@ -31,7 +32,13 @@ class userScreen extends StatelessWidget {
                   body: Center(
                       child: Column(children: [
                     Text("User: ${user?.displayName!} "),
-                    Text("Email: ${user?.email!}")
+                    Text("Email: ${user?.email!}"),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/review");
+                      },
+                      child: const Text('Add review'),
+                    )
                   ])),
                 )));
   }
