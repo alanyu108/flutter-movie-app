@@ -13,6 +13,7 @@ class User {
 class GoogleSignInProvider extends ChangeNotifier {
   User? _user;
   User get user => _user!;
+  final _auth = FirebaseAuth.instance;
   final googleSignIn = GoogleSignIn();
 
   Future googleLogin() async {
@@ -32,6 +33,7 @@ class GoogleSignInProvider extends ChangeNotifier {
         accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
 
     await FirebaseAuth.instance.signInWithCredential(credentials);
+
     notifyListeners();
   }
 
