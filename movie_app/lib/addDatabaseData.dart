@@ -25,6 +25,7 @@ void addDatabaseData() async {
   for (int i = 0; i < 10; i++) {
     await ref.push().set({
       "user": randomString(users),
+      "uid": "10",
       "rating": random.nextInt(5) + 1,
       "movie": randomString(movies),
       "review": review
