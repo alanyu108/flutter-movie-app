@@ -22,14 +22,7 @@ class _MovieReviewListState extends State<MovieReviewList> {
           Map<Object?, Object?>.from(snapshot.value as Map<Object?, Object?>);
 
       data.forEach((_, value) {
-        List<dynamic> review = [];
-        final newData =
-            Map<Object?, Object?>.from(value as Map<Object?, Object?>);
-        newData.forEach((_, value) {
-          review.add(value);
-        });
-
-        movieReviews.add(MovieReviewModel.fromList(review));
+        movieReviews.add(MovieReviewModel.fromList(value));
       });
     } else {
       print('No data available.');
@@ -53,12 +46,44 @@ class _MovieReviewListState extends State<MovieReviewList> {
           return ListView.builder(
               itemCount: snapshot.data?.length,
               itemBuilder: (BuildContext context, int index) {
-                return Row(children: [
-                  Text(snapshot.data![index].movie),
-                  Text(snapshot.data![index].review),
-                  Text(snapshot.data![index].rating.toString()),
-                  Text(snapshot.data![index].user)
-                ]);
+                return Container(
+                    margin: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(3.0),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.blueAccent)),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Movie:",
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                          Text(snapshot.data![index].movie),
+                          const Text(
+                            "Rating:",
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                          Text(snapshot.data![index].rating.toString()),
+                          const Text(
+                            "Review:",
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                          Text(snapshot.data![index].review),
+                          const Text(
+                            "By:",
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                          Text(snapshot.data![index].user),
+                          const Padding(padding: EdgeInsets.all(8.0))
+                        ]));
               });
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');

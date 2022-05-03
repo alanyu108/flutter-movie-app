@@ -13,13 +13,21 @@ class MovieReviewModel {
   int rating;
   String user;
 
-  factory MovieReviewModel.fromList(List<dynamic> items) => MovieReviewModel(
-        uid: items[0],
-        movie: items[1],
-        review: items[2],
-        rating: items[3],
-        user: items[4],
-      );
+  factory MovieReviewModel.fromList(Object? dbData) {
+    List<dynamic> reviewData = [];
+    final data = Map<Object?, Object?>.from(dbData as Map<Object?, Object?>);
+    data.forEach((_, value) {
+      reviewData.add(value);
+    });
+
+    return MovieReviewModel(
+      uid: reviewData[0],
+      movie: reviewData[1],
+      review: reviewData[2],
+      rating: reviewData[3],
+      user: reviewData[4],
+    );
+  }
   // factory MovieReivewModel.fromJson(Map<String, dynamic> json) =>
   //     MovieReivewModel(
   //       uid: json["uid"],
