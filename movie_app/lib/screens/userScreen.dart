@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:movie_app/homepage.dart';
 import 'package:provider/provider.dart';
 import 'package:movie_app/provider/googleProvider.dart';
 
@@ -25,10 +24,6 @@ class userScreen extends StatelessWidget {
                                 context,
                                 listen: false);
                             provider.googleLogout();
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomePage()));
                           },
                           child: const Text("Logout"))
                     ],

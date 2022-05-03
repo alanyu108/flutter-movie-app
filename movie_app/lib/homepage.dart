@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/screens/userScreen.dart';
-import '../widget/SignInWidget.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -20,31 +19,19 @@ class HomePage extends StatelessWidget {
           return const Center(child: Text("We have an error"));
         } else {
           return Scaffold(
-              body: SafeArea(
-            child: Column(
-              children: [
-                Image.asset("assets/images/welcome_pic.jpeg"),
-                Text("Welcome to Movie Reviews",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline5),
-                // const Text("This is the sign in page"),
-                SignInWidget()
+            appBar: AppBar(
+              title: const Text("Movie App"),
+              centerTitle: true,
+              actions: [
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/login');
+                    },
+                    child: const Text("Login"))
               ],
             ),
-          )
-              // appBar: AppBar(
-              //   title: const Text("Movie App"),
-              //   centerTitle: true,
-              //   actions: [
-              //     ElevatedButton(
-              //         onPressed: () {
-              //           Navigator.pushNamed(context, '/login');
-              //         },
-              //         child: const Text("Login"))
-              //   ],
-              // ),
-              // body: const Center(child: Text("This is the homepage")),
-              );
+            body: const Center(child: Text("This is the homepage")),
+          );
         }
       },
     );
