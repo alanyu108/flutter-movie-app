@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "736195797497",
+    "firebase_url": "https://flutter-class-ef82a-default-rtdb.firebaseio.com",
     "project_id": "flutter-class-ef82a",
     "storage_bucket": "flutter-class-ef82a.appspot.com"
   },
@@ -19,6 +20,14 @@
           "android_info": {
             "package_name": "com.example.movie_app",
             "certificate_hash": "b3f871719ad5f6d59b2ebcb9dc27c416978fdb3e"
+          }
+        },
+        {
+          "client_id": "736195797497-posqdbe9p9co79ejusf6puc8pqvanenm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.movie_app",
+            "certificate_hash": "c8349b163196d6f7a3ce0183b1e7f087675532b1"
           }
         },
         {
