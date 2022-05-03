@@ -20,13 +20,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: Colors.blue,
       ),
       initialRoute: "/",
       routes: {
         "/": (context) => const HomePage(),
         "/login": (context) => const SignInScreen(),
-        "/review": (context) => reviewScreen()
+        "/review": (context) => reviewScreen(),
       },
     );
   }

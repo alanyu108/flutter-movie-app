@@ -1,6 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import '../models/MovieReviewModel.dart';
+import 'ListCard.dart';
+
+class buildMovieReviewList extends ListCard<MovieReviewModel> {
+  @override
+  Widget createCard(MovieReviewModel cardItem) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const Text(
+        "Movie:",
+        style: TextStyle(
+          decoration: TextDecoration.underline,
+        ),
+      ),
+      Text(cardItem.movie),
+      const Text(
+        "Rating:",
+        style: TextStyle(
+          decoration: TextDecoration.underline,
+        ),
+      ),
+      Text(cardItem.rating.toString()),
+      const Text(
+        "Review:",
+        style: TextStyle(
+          decoration: TextDecoration.underline,
+        ),
+      ),
+      Text(cardItem.review),
+      const Text(
+        "By:",
+        style: TextStyle(
+          decoration: TextDecoration.underline,
+        ),
+      ),
+      Text(cardItem.user)
+    ]);
+  }
+}
 
 class MovieReviewList extends StatefulWidget {
   const MovieReviewList({Key? key}) : super(key: key);
@@ -27,6 +64,7 @@ class _MovieReviewListState extends State<MovieReviewList> {
     } else {
       print('No data available.');
     }
+
     return movieReviews;
   }
 
@@ -38,60 +76,6 @@ class _MovieReviewListState extends State<MovieReviewList> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: FutureBuilder<List<MovieReviewModel>>(
-      future: movieReviews,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return ListView.builder(
-              itemCount: snapshot.data?.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                    margin: const EdgeInsets.all(15.0),
-                    padding: const EdgeInsets.all(3.0),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.blueAccent)),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Movie:",
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                          Text(snapshot.data![index].movie),
-                          const Text(
-                            "Rating:",
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                          Text(snapshot.data![index].rating.toString()),
-                          const Text(
-                            "Review:",
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                          Text(snapshot.data![index].review),
-                          const Text(
-                            "By:",
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                          Text(snapshot.data![index].user),
-                          const Padding(padding: EdgeInsets.all(8.0))
-                        ]));
-              });
-        } else if (snapshot.hasError) {
-          return Text('${snapshot.error}');
-        }
-
-        // By default, show a loading spinner.
-        return const CircularProgressIndicator();
-      },
-    ));
+    return buildMovieReviewList().createListCards(movieReviews);
   }
 }

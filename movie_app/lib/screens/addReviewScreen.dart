@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:math';
 
 class reviewScreen extends StatefulWidget {
   const reviewScreen({Key? key}) : super(key: key);
@@ -49,6 +50,14 @@ class MyCustomFormState extends State<MyCustomForm> {
   String movieName = "";
   String review = "";
   DatabaseReference ref = FirebaseDatabase.instance.ref();
+
+  String _generateRandomString(int len) {
+    var r = Random();
+    const _chars =
+        'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    return List.generate(len, (index) => _chars[r.nextInt(_chars.length)])
+        .join();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,6 +150,9 @@ class MyCustomFormState extends State<MyCustomForm> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Processing Data')),
                   );
+
+                  String uid = _generateRandomString(16);
+
                   final reviewData = <String, dynamic>{
                     "user": user.displayName,
                     "uid": user.uid,
@@ -156,26 +168,42 @@ class MyCustomFormState extends State<MyCustomForm> {
                     "review": review
                   };
 
-                  ref
-                      .child("movie_reviews/")
-                      .push()
-                      .set(reviewData)
-                      .then((value) {
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, "/", (Route<dynamic> route) => false);
-                  }).catchError((e) {
-                    print(e);
-                  });
+                  final movieReview = <String, dynamic>{
+                    "user": user.displayName,
+                    "uid": user.uid,
+                    "rating": int.parse(rating),
+                    "review": review,
+                  };
+
+                  final ratingReview = <String, dynamic>{
+                    "user": user.displayName,
+                    "uid": user.uid,
+                    "movie": movieName,
+                    "review": review
+                  };
 
                   ref
-                      .child("${user.uid}/")
-                      .push()
-                      .set(userReview)
+                      .child("movie_reviews/${uid}")
+                      .set(reviewData)
                       .then((value) {
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, "/", (Route<dynamic> route) => false);
+                    ref
+                        .child("user_reviews/${user.uid}/$uid")
+                        .set(userReview)
+                        .then((value) {
+                      ref
+                          .child("movies/$movieName/$uid")
+                          .set(movieReview)
+                          .then((value) {
+                        ref
+                            .child("ratings/$rating/$uid")
+                            .set(ratingReview)
+                            .then((value) {
+                          ScaffoldMessenger.of(context).clearSnackBars();
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, "/", (Route<dynamic> route) => false);
+                        });
+                      });
+                    });
                   }).catchError((e) {
                     print(e);
                   });

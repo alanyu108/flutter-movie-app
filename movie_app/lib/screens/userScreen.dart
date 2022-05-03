@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:movie_app/widget/MovieReviewList.dart';
 import 'package:provider/provider.dart';
 import 'package:movie_app/provider/googleProvider.dart';
+import '../screens/userPostScreen.dart';
 
 class userScreen extends StatelessWidget {
   userScreen({Key? key}) : super(key: key);
@@ -34,6 +35,22 @@ class userScreen extends StatelessWidget {
                 children: [
                   Text("User: ${user?.displayName!} "),
                   Text("Email: ${user?.email!}"),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.white,
+                        onPrimary: Colors.black,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => userPostScreen(
+                                user: "${user?.displayName!}",
+                                uid: "${user?.uid}"),
+                          ),
+                        );
+                      },
+                      child: const Text("See my posts")),
                   const Expanded(
                       child: SizedBox(
                     height: 200,
