@@ -34,8 +34,7 @@ class buildMovieReviewList extends ListCard<MovieReviewModel> {
           decoration: TextDecoration.underline,
         ),
       ),
-      Text(cardItem.user),
-      const Padding(padding: EdgeInsets.all(8.0))
+      Text(cardItem.user)
     ]);
   }
 }

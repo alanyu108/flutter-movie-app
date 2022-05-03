@@ -4,6 +4,12 @@ import '../models/UserReviewModel.dart';
 import '../widget/ListCard.dart';
 
 class buildMovieReviewList extends ListCard<UserReviewModel> {
+  buildMovieReviewList(this.db, this.uid, this.context);
+
+  DatabaseReference db;
+  String uid;
+  BuildContext context;
+
   @override
   Widget createCard(UserReviewModel cardItem) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -35,7 +41,74 @@ class buildMovieReviewList extends ListCard<UserReviewModel> {
         ),
       ),
       Text(cardItem.user),
-      const Padding(padding: EdgeInsets.all(8.0))
+      GestureDetector(
+        onTap: () {
+          showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text("Delete Review"),
+                content: const Text("Do you want to delete your post?"),
+                actions: [
+                  TextButton(
+                    child: const Text(
+                      "No",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  TextButton(
+                    child: const Text(
+                      "Yes",
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    onPressed: () {
+                      db
+                          .child("movie_reviews/${cardItem.entry_id}")
+                          .remove()
+                          .then((value) {
+                        db
+                            .child("user_reviews/$uid/${cardItem.entry_id}")
+                            .remove()
+                            .then((value) {
+                          db
+                              .child(
+                                  "movies/${cardItem.movie}/${cardItem.entry_id}")
+                              .remove()
+                              .then((value) {
+                            db
+                                .child(
+                                    "ratings/${cardItem.rating}/${cardItem.entry_id}")
+                                .remove()
+                                .then((value) {
+                              Navigator.pushNamedAndRemoveUntil(context, "/",
+                                  (Route<dynamic> route) => false);
+                            });
+                          });
+                        });
+                      }).catchError((e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Failed to Delete Review!')),
+                        );
+                        Navigator.pop(context);
+                      });
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        child: const Icon(
+          Icons.delete,
+          color: Colors.red,
+          size: 30,
+        ),
+      ),
     ]);
   }
 }
@@ -63,8 +136,11 @@ class _userPostScreen extends State<userPostScreen> {
       final data =
           Map<Object?, Object?>.from(snapshot.value as Map<Object?, Object?>);
 
-      data.forEach((_, value) {
-        userReviews.add(UserReviewModel.fromList(value));
+      data.forEach((key, value) {
+        UserReviewModel data = UserReviewModel.fromList(value);
+
+        data.setEntryID(key as String);
+        userReviews.add(data);
       });
     } else {
       print('No data available.');
@@ -86,7 +162,8 @@ class _userPostScreen extends State<userPostScreen> {
         title: const Text("Movie App"),
         centerTitle: true,
       ),
-      body: buildMovieReviewList().createListCards(userReviews),
+      body: buildMovieReviewList(ref, widget.uid, context)
+          .createListCards(userReviews),
     );
   }
 }

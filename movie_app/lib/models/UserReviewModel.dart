@@ -10,6 +10,7 @@ class UserReviewModel {
   String movie;
   String review;
   int rating;
+  String entry_id = "";
 
   factory UserReviewModel.fromList(Object? dbData) {
     List<dynamic> reviewData = [];
@@ -24,5 +25,9 @@ class UserReviewModel {
       rating: reviewData[2],
       user: reviewData[3],
     );
+  }
+
+  void setEntryID(String id) {
+    entry_id = id;
   }
 }
