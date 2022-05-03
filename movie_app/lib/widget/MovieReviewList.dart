@@ -2,38 +2,43 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import '../models/MovieReviewModel.dart';
 import 'ListCard.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class buildMovieReviewList extends ListCard<MovieReviewModel> {
   @override
   Widget createCard(MovieReviewModel cardItem) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const Text(
-        "Movie:",
-        style: TextStyle(
-          decoration: TextDecoration.underline,
-        ),
+      // Text(
+      //   "Movie:",
+      //   // style: TextStyle(
+      //   //   decoration: TextDecoration.underline,
+      //   // style: GoogleFonts.kaiseiTokumin(fontSize: 24),
+      // ),
+      Text(
+        cardItem.movie,
+        style: GoogleFonts.kaiseiTokumin(
+            fontSize: 26, color: Color.fromARGB(255, 52, 52, 52)),
       ),
-      Text(cardItem.movie),
-      const Text(
-        "Rating:",
-        style: TextStyle(
-          decoration: TextDecoration.underline,
-        ),
-      ),
-      Text(cardItem.rating.toString()),
-      const Text(
-        "Review:",
-        style: TextStyle(
-          decoration: TextDecoration.underline,
-        ),
-      ),
+      // const Text(
+      //   "Rating:",
+      //   style: TextStyle(
+      //     decoration: TextDecoration.underline,
+      //   ),
+      // ),
+      Text(cardItem.rating.toString() + ' stars'),
+      // const Text(
+      //   "Review:",
+      //   style: TextStyle(
+      //     decoration: TextDecoration.underline,
+      //   ),
+      // ),
       Text(cardItem.review),
-      const Text(
-        "By:",
-        style: TextStyle(
-          decoration: TextDecoration.underline,
-        ),
-      ),
+      // const Text(
+      //   "By:",
+      //   style: TextStyle(
+      //     decoration: TextDecoration.underline,
+      //   ),
+      // ),
       Text(cardItem.user)
     ]);
   }

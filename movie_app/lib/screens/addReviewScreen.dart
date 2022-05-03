@@ -19,8 +19,9 @@ class _reviewScreenState extends State<reviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Movie App"),
+        title: const Text("Add a review"),
         centerTitle: true,
       ),
       body: const MyCustomForm(),
@@ -68,8 +69,11 @@ class MyCustomFormState extends State<MyCustomForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextFormField(
+            style: TextStyle(fontSize: 18, color: Colors.white),
             decoration: const InputDecoration(
-                icon: Icon(Icons.movie), labelText: "Movie Name"),
+                icon: Icon(Icons.movie, color: Colors.white),
+                hintText: "Movie Name",
+                hintStyle: TextStyle(color: Colors.white)),
             // The validator receives the text that the user has entered.
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -84,10 +88,13 @@ class MyCustomFormState extends State<MyCustomForm> {
             },
           ),
           TextFormField(
+            style: TextStyle(fontSize: 18, color: Colors.white),
             keyboardType: TextInputType.multiline,
             maxLines: null,
             decoration: const InputDecoration(
-                icon: Icon(Icons.edit), labelText: "Review"),
+                icon: Icon(Icons.edit, color: Colors.white),
+                hintText: "Review",
+                hintStyle: TextStyle(color: Colors.white)),
             // The validator receives the text that the user has entered.
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -108,11 +115,11 @@ class MyCustomFormState extends State<MyCustomForm> {
                 text: const TextSpan(
                   children: [
                     WidgetSpan(
-                      child: Icon(Icons.star),
+                      child: Icon(Icons.star, color: Colors.white),
                     ),
                     TextSpan(
                       text: "Rating:",
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(color: Colors.white),
                     ),
                   ],
                 ),
@@ -120,7 +127,7 @@ class MyCustomFormState extends State<MyCustomForm> {
               const Padding(padding: EdgeInsets.fromLTRB(5, 0, 5, 0)),
               DropdownButton<String>(
                 value: rating,
-                icon: const Icon(Icons.arrow_downward),
+                icon: const Icon(Icons.arrow_downward, color: Colors.white),
                 elevation: 16,
                 onChanged: (String? newValue) {
                   setState(() {
@@ -131,7 +138,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
-                    child: Text(value),
+                    child: Text(value, style: TextStyle(color: Colors.blue)),
                   );
                 }).toList(),
               )

@@ -18,10 +18,20 @@ abstract class ListCard<T> {
               itemBuilder: (BuildContext context, int index) {
                 return Container(
                     margin: const EdgeInsets.all(15.0),
-                    padding: const EdgeInsets.all(3.0),
+                    // padding: const EdgeInsets.all(3.0),
                     decoration: BoxDecoration(
-                        border: Border.all(color: Colors.blueAccent)),
-                    child: createCard(snapshot.data![index]));
+                        // border: Border.all(color: Colors.redAccent),
+                        color: const Color(0xFFF5FDFF)),
+                    child: Row(children: [
+                      SizedBox(
+                        height: 222,
+                        child: Image.asset('assets/images/inception.jpeg',
+                            height: 222),
+                      ),
+                      Flexible(
+                        child: createCard(snapshot.data![index]),
+                      )
+                    ]));
               });
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
