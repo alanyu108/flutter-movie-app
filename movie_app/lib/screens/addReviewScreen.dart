@@ -156,26 +156,46 @@ class MyCustomFormState extends State<MyCustomForm> {
                     "review": review
                   };
 
+                  final movieReview = <String, dynamic>{
+                    "user": user.displayName,
+                    "uid": user.uid,
+                    "rating": int.parse(rating),
+                    "review": review,
+                  };
+
+                  final ratingReview = <String, dynamic>{
+                    "user": user.displayName,
+                    "uid": user.uid,
+                    "movie": movieName,
+                    "review": review
+                  };
+
                   ref
                       .child("movie_reviews/")
                       .push()
                       .set(reviewData)
                       .then((value) {
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, "/", (Route<dynamic> route) => false);
-                  }).catchError((e) {
-                    print(e);
-                  });
-
-                  ref
-                      .child("${user.uid}/")
-                      .push()
-                      .set(userReview)
-                      .then((value) {
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, "/", (Route<dynamic> route) => false);
+                    ref
+                        .child("user_reviews/${user.uid}/")
+                        .push()
+                        .set(userReview)
+                        .then((value) {
+                      ref
+                          .child("movies/$movieName/")
+                          .push()
+                          .set(movieReview)
+                          .then((value) {
+                        ref
+                            .child("ratings/$rating/")
+                            .push()
+                            .set(ratingReview)
+                            .then((value) {
+                          ScaffoldMessenger.of(context).clearSnackBars();
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, "/", (Route<dynamic> route) => false);
+                        });
+                      });
+                    });
                   }).catchError((e) {
                     print(e);
                   });
