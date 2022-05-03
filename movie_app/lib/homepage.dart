@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/screens/userScreen.dart';
+import 'widget/MovieReviewList.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -30,7 +31,7 @@ class HomePage extends StatelessWidget {
                     child: const Text("Login"))
               ],
             ),
-            body: const Center(child: Text("This is the homepage")),
+            body: const MovieReviewList(),
           );
         }
       },

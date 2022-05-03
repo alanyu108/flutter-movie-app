@@ -19,6 +19,8 @@ class SignInWidget extends StatelessWidget {
                     final provider = Provider.of<GoogleSignInProvider>(context,
                         listen: false);
                     provider.googleLogin();
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, "/", (Route<dynamic> route) => false);
                   },
                   child: const Text('Sign in with Google'),
                 )));
