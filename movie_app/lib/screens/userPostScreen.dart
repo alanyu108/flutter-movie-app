@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import '../models/MovieReviewModel.dart';
-import 'ListCard.dart';
+import '../models/UserReviewModel.dart';
+import '../widget/ListCard.dart';
 
-class buildMovieReviewList extends ListCard<MovieReviewModel> {
+class buildMovieReviewList extends ListCard<UserReviewModel> {
   @override
-  Widget createCard(MovieReviewModel cardItem) {
+  Widget createCard(UserReviewModel cardItem) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const Text(
         "Movie:",
@@ -40,43 +40,53 @@ class buildMovieReviewList extends ListCard<MovieReviewModel> {
   }
 }
 
-class MovieReviewList extends StatefulWidget {
-  const MovieReviewList({Key? key}) : super(key: key);
+class userPostScreen extends StatefulWidget {
+  const userPostScreen({Key? key, required this.user, required this.uid})
+      : super(key: key);
+
+  final String user;
+  final String uid;
 
   @override
-  State<MovieReviewList> createState() => _MovieReviewListState();
+  _userPostScreen createState() => _userPostScreen();
 }
 
-class _MovieReviewListState extends State<MovieReviewList> {
-  late Future<List<MovieReviewModel>> movieReviews;
+class _userPostScreen extends State<userPostScreen> {
+  late Future<List<UserReviewModel>> userReviews;
   final ref = FirebaseDatabase.instance.ref();
 
-  Future<List<MovieReviewModel>> _fetchMovieData() async {
-    final snapshot = await ref.child('movie_reviews/').get();
-    List<MovieReviewModel> movieReviews = [];
+  Future<List<UserReviewModel>> _fetchUserReviewData() async {
+    final snapshot = await ref.child('user_reviews/${widget.uid}').get();
+    List<UserReviewModel> userReviews = [];
 
     if (snapshot.exists) {
       final data =
           Map<Object?, Object?>.from(snapshot.value as Map<Object?, Object?>);
 
       data.forEach((_, value) {
-        movieReviews.add(MovieReviewModel.fromList(value));
+        userReviews.add(UserReviewModel.fromList(value));
       });
     } else {
       print('No data available.');
     }
 
-    return movieReviews;
+    return userReviews;
   }
 
   @override
   void initState() {
     super.initState();
-    movieReviews = _fetchMovieData();
+    userReviews = _fetchUserReviewData();
   }
 
   @override
   Widget build(BuildContext context) {
-    return buildMovieReviewList().createListCards(movieReviews);
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Movie App"),
+        centerTitle: true,
+      ),
+      body: buildMovieReviewList().createListCards(userReviews),
+    );
   }
 }
