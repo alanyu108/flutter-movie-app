@@ -141,7 +141,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Processing Data')),
                   );
-                  final data = <String, dynamic>{
+                  final reviewData = <String, dynamic>{
                     "user": user.displayName,
                     "uid": user.uid,
                     "rating": int.parse(rating),
@@ -149,7 +149,30 @@ class MyCustomFormState extends State<MyCustomForm> {
                     "review": review
                   };
 
-                  ref.child("movie_reviews/").push().set(data).then((value) {
+                  final userReview = <String, dynamic>{
+                    "user": user.displayName,
+                    "rating": int.parse(rating),
+                    "movie": movieName,
+                    "review": review
+                  };
+
+                  ref
+                      .child("movie_reviews/")
+                      .push()
+                      .set(reviewData)
+                      .then((value) {
+                    ScaffoldMessenger.of(context).clearSnackBars();
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, "/", (Route<dynamic> route) => false);
+                  }).catchError((e) {
+                    print(e);
+                  });
+
+                  ref
+                      .child("${user.uid}/")
+                      .push()
+                      .set(userReview)
+                      .then((value) {
                     ScaffoldMessenger.of(context).clearSnackBars();
                     Navigator.pushNamedAndRemoveUntil(
                         context, "/", (Route<dynamic> route) => false);
