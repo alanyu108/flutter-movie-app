@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
-import '../models/MovieReviewModel.dart';
-import 'ListCard.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../screens/AuthorScreen.dart';
+import 'package:movie_app/models/UserReviewModel.dart';
+import '../models/MovieReviewModel.dart';
+import 'package:firebase_database/firebase_database.dart';
+import '../widget/ListCard.dart';
 
-class buildMovieReviewList extends ListCard<MovieReviewModel> {
+class buildMovieReviewList extends ListCard<UserReviewModel> {
   buildMovieReviewList({required this.context});
 
   BuildContext context;
 
   @override
-  Widget createCard(MovieReviewModel cardItem) {
+  Widget createCard(UserReviewModel cardItem) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       // Text(
       //   "Movie:",
@@ -50,56 +50,71 @@ class buildMovieReviewList extends ListCard<MovieReviewModel> {
       // Container(
       //   alignment: Alignment(0.0, -1.0),
       // ),
-      GestureDetector(
-        child: Text(cardItem.user, textAlign: TextAlign.right),
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => AuthorScreen(review: cardItem)));
-        },
-      )
+      Text(cardItem.user, textAlign: TextAlign.right),
     ]);
   }
 }
 
-class MovieReviewList extends StatefulWidget {
-  const MovieReviewList({Key? key}) : super(key: key);
+class AuthorScreen extends StatefulWidget {
+  const AuthorScreen({Key? key, required this.review}) : super(key: key);
+
+  final MovieReviewModel review;
 
   @override
-  State<MovieReviewList> createState() => _MovieReviewListState();
+  _AuthorScreen createState() => _AuthorScreen();
 }
 
-class _MovieReviewListState extends State<MovieReviewList> {
-  late Future<List<MovieReviewModel>> movieReviews;
+class _AuthorScreen extends State<AuthorScreen> {
+  late Future<List<UserReviewModel>> movieReviewsByAuthor;
   final ref = FirebaseDatabase.instance.ref();
 
-  Future<List<MovieReviewModel>> _fetchMovieData() async {
-    final snapshot = await ref.child('movie_reviews/').get();
-    List<MovieReviewModel> movieReviews = [];
+  Future<List<UserReviewModel>> _fetchMovieDataByAuthor() async {
+    final snapshot = await ref.child('user_reviews/${widget.review.uid}').get();
+    List<UserReviewModel> movieReviews = [];
 
     if (snapshot.exists) {
       final data =
           Map<Object?, Object?>.from(snapshot.value as Map<Object?, Object?>);
 
       data.forEach((_, value) {
-        movieReviews.add(MovieReviewModel.fromList(value));
+        movieReviews.add(UserReviewModel.fromList(value));
       });
     } else {
       print('No data available.');
     }
-
     return movieReviews;
   }
 
   @override
   void initState() {
     super.initState();
-    movieReviews = _fetchMovieData();
+    movieReviewsByAuthor = _fetchMovieDataByAuthor();
   }
 
   @override
   Widget build(BuildContext context) {
-    return buildMovieReviewList(context: context).createListCards(movieReviews);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("MOVIE APP",
+            style: GoogleFonts.libreBarcode39ExtendedText(
+              color: Colors.white,
+              fontSize: 48,
+            )),
+      ),
+      body: Column(
+        children: [
+          Center(
+              child: Text("User: ${widget.review.user}",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ))),
+          Expanded(
+            child: buildMovieReviewList(context: context)
+                .createListCards(movieReviewsByAuthor),
+          )
+        ],
+      ),
+    );
   }
 }
