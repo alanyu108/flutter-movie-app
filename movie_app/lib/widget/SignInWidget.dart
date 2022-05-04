@@ -8,7 +8,7 @@ class SignInWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => GoogleSignInProvider(),
+        create: (context) => GoogleSignInProvider(context: context),
         child: Consumer<GoogleSignInProvider>(
             builder: (context, value, child) => ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -19,8 +19,8 @@ class SignInWidget extends StatelessWidget {
                   final provider =
                       Provider.of<GoogleSignInProvider>(context, listen: false);
                   provider.googleLogin();
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, "/", (Route<dynamic> route) => false);
+                  // Navigator.pushNamedAndRemoveUntil(
+                  //     context, "/", (Route<dynamic> route) => false);
                 },
                 child: new Row(
                   mainAxisSize: MainAxisSize.min,

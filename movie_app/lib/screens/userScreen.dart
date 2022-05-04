@@ -14,7 +14,7 @@ class userScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => GoogleSignInProvider(),
+        create: (context) => GoogleSignInProvider(context: context),
         child: Consumer<GoogleSignInProvider>(
           builder: (context, value, child) => Scaffold(
             appBar: AppBar(

@@ -11,9 +11,12 @@ class User {
 }
 
 class GoogleSignInProvider extends ChangeNotifier {
+  GoogleSignInProvider({required this.context});
+
   User? _user;
   User get user => _user!;
   final googleSignIn = GoogleSignIn();
+  final BuildContext context;
 
   Future googleLogin() async {
     //opens sign-in screen
@@ -33,6 +36,7 @@ class GoogleSignInProvider extends ChangeNotifier {
 
     await FirebaseAuth.instance.signInWithCredential(credentials);
     notifyListeners();
+    Navigator.pop(context);
   }
 
   Future googleLogout() async {
