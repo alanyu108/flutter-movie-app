@@ -160,175 +160,223 @@ class _EditPostScreen extends State<EditPostScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: ElevatedButton(
                         onPressed: () {
-                          DatabaseReference dbRef = widget.db;
-                          UserReviewModel user = widget.userReview;
-                          // Validate returns true if the form is valid, or false otherwise.
-                          if (_formKey.currentState!.validate()) {
-                            //check if user had changed any values
-                            if (user.movie == movieName &&
-                                user.review == review &&
-                                user.rating.toString() == rating) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Values were not changed')),
-                              );
-                              return;
-                            }
+                          showDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (BuildContext dialogContext) {
+                              return AlertDialog(
+                                title: const Text("Edit Post"),
+                                content: const Text(
+                                    "Are you sure you want to make these changes?"),
+                                actions: [
+                                  TextButton(
+                                    child: const Text(
+                                      "No",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(dialogContext);
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: const Text(
+                                      "Yes",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                    onPressed: () {
+                                      DatabaseReference dbRef = widget.db;
+                                      UserReviewModel user = widget.userReview;
+                                      // Validate returns true if the form is valid, or false otherwise.
+                                      if (_formKey.currentState!.validate()) {
+                                        //check if user had changed any values
+                                        if (user.movie == movieName &&
+                                            user.review == review &&
+                                            user.rating.toString() == rating) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                                content: Text(
+                                                    'Values were not changed')),
+                                          );
+                                          Navigator.pop(dialogContext);
+                                          return;
+                                        }
 
-                            if (user.movie != movieName) {
-                              changeMovieName = true;
-                            }
-                            if (user.rating.toString() != rating) {
-                              changeRating = true;
-                            }
+                                        if (user.movie != movieName) {
+                                          changeMovieName = true;
+                                        }
+                                        if (user.rating.toString() != rating) {
+                                          changeRating = true;
+                                        }
 
-                            //  ScaffoldMessenger.of(context).showSnackBar(
-                            //     const SnackBar(content: Text('Processing Data')),
-                            //   );
-                            final reviewData = <String, dynamic>{
-                              "user": widget.user,
-                              "uid": widget.uid,
-                              "rating": int.parse(rating),
-                              "movie": movieName,
-                              "review": review
-                            };
+                                        //  ScaffoldMessenger.of(context).showSnackBar(
+                                        //     const SnackBar(content: Text('Processing Data')),
+                                        //   );
+                                        final reviewData = <String, dynamic>{
+                                          "user": widget.user,
+                                          "uid": widget.uid,
+                                          "rating": int.parse(rating),
+                                          "movie": movieName,
+                                          "review": review
+                                        };
 
-                            final movieReview = <String, dynamic>{
-                              "user": widget.user,
-                              "uid": widget.uid,
-                              "rating": int.parse(rating),
-                              "review": review,
-                            };
+                                        final movieReview = <String, dynamic>{
+                                          "user": widget.user,
+                                          "uid": widget.uid,
+                                          "rating": int.parse(rating),
+                                          "review": review,
+                                        };
 
-                            final ratingReview = <String, dynamic>{
-                              "user": widget.user,
-                              "uid": widget.uid,
-                              "movie": movieName,
-                              "review": review
-                            };
+                                        final ratingReview = <String, dynamic>{
+                                          "user": widget.user,
+                                          "uid": widget.uid,
+                                          "movie": movieName,
+                                          "review": review
+                                        };
 
-                            final userReview = <String, dynamic>{
-                              "user": widget.user,
-                              "rating": int.parse(rating),
-                              "movie": movieName,
-                              "review": review
-                            };
+                                        final userReview = <String, dynamic>{
+                                          "user": widget.user,
+                                          "rating": int.parse(rating),
+                                          "movie": movieName,
+                                          "review": review
+                                        };
 
-                            //updates the movie_reviews db
-                            dbRef
-                                .child("movie_reviews/${user.entry_id}/")
-                                .set(reviewData)
-                                .then((_) {
-                              //updates the user_reviews db
-                              dbRef
-                                  .child(
-                                      "user_reviews/${widget.uid}/${user.entry_id}")
-                                  .set(userReview)
-                                  .then((_) {
-                                if (user.review != review &&
-                                    !changeMovieName &&
-                                    !changeRating) {
-                                  dbRef
-                                      .child(
-                                          "movies/${user.movie}/${user.entry_id}")
-                                      .set(movieReview)
-                                      .then((_) {
-                                    dbRef
-                                        .child(
-                                            "ratings/${user.rating}/${user.entry_id}")
-                                        .set(ratingReview);
-                                  });
-                                }
-                                if (changeMovieName && changeRating) {
-                                  //removes the entry in the movie db
-                                  dbRef
-                                      .child(
-                                          "movies/${user.movie}/${user.entry_id}")
-                                      .set(null)
-                                      .then((value) {
-                                    //adds a new entry into the movie db
-                                    dbRef
-                                        .child(
-                                            "movies/$movieName/${user.entry_id}")
-                                        .set(movieReview)
-                                        .then((value) {
-                                      //removes the review from the rating db
-                                      dbRef
-                                          .child(
-                                              "ratings/${user.rating}/${user.entry_id}")
-                                          .set(null)
-                                          .then((value) {
-                                        //adds the new entry to the updated rating value
+                                        //updates the movie_reviews db
                                         dbRef
                                             .child(
-                                                "ratings/$rating/${user.entry_id}")
-                                            .set(ratingReview)
-                                            .then((value) {
-                                          Navigator.pushNamedAndRemoveUntil(
-                                              context,
-                                              "/",
-                                              (Route<dynamic> route) => false);
+                                                "movie_reviews/${user.entry_id}/")
+                                            .set(reviewData)
+                                            .then((_) {
+                                          //updates the user_reviews db
+                                          dbRef
+                                              .child(
+                                                  "user_reviews/${widget.uid}/${user.entry_id}")
+                                              .set(userReview)
+                                              .then((_) {
+                                            if (user.review != review &&
+                                                !changeMovieName &&
+                                                !changeRating) {
+                                              dbRef
+                                                  .child(
+                                                      "movies/${user.movie}/${user.entry_id}")
+                                                  .set(movieReview)
+                                                  .then((_) {
+                                                dbRef
+                                                    .child(
+                                                        "ratings/${user.rating}/${user.entry_id}")
+                                                    .set(ratingReview);
+                                              });
+                                            }
+                                            if (changeMovieName &&
+                                                changeRating) {
+                                              //removes the entry in the movie db
+                                              dbRef
+                                                  .child(
+                                                      "movies/${user.movie}/${user.entry_id}")
+                                                  .set(null)
+                                                  .then((value) {
+                                                //adds a new entry into the movie db
+                                                dbRef
+                                                    .child(
+                                                        "movies/$movieName/${user.entry_id}")
+                                                    .set(movieReview)
+                                                    .then((value) {
+                                                  //removes the review from the rating db
+                                                  dbRef
+                                                      .child(
+                                                          "ratings/${user.rating}/${user.entry_id}")
+                                                      .set(null)
+                                                      .then((value) {
+                                                    //adds the new entry to the updated rating value
+                                                    dbRef
+                                                        .child(
+                                                            "ratings/$rating/${user.entry_id}")
+                                                        .set(ratingReview)
+                                                        .then((value) {
+                                                      Navigator
+                                                          .pushNamedAndRemoveUntil(
+                                                              context,
+                                                              "/",
+                                                              (Route<dynamic>
+                                                                      route) =>
+                                                                  false);
+                                                    });
+                                                  });
+                                                });
+                                              });
+                                            } else if (changeMovieName ==
+                                                true) {
+                                              //removes the entry in the movie db
+                                              dbRef
+                                                  .child(
+                                                      "movies/${user.movie}/${user.entry_id}")
+                                                  .set(null)
+                                                  .then((value) {
+                                                //adds a new entry into the movie db
+                                                dbRef
+                                                    .child(
+                                                        "movies/$movieName/${user.entry_id}")
+                                                    .set(movieReview)
+                                                    .then((value) {
+                                                  dbRef
+                                                      .child(
+                                                          "ratings/${user.rating}/${user.entry_id}")
+                                                      .set(ratingReview)
+                                                      .then((value) {
+                                                    Navigator
+                                                        .pushNamedAndRemoveUntil(
+                                                            context,
+                                                            "/",
+                                                            (Route<dynamic>
+                                                                    route) =>
+                                                                false);
+                                                  });
+                                                });
+                                              });
+                                            } else if (changeRating == true) {
+                                              //removes the review from the rating db
+                                              dbRef
+                                                  .child(
+                                                      "ratings/${user.rating}/${user.entry_id}")
+                                                  .set(null)
+                                                  .then((value) {
+                                                //adds the new entry to the updated rating value
+                                                dbRef
+                                                    .child(
+                                                        "ratings/$rating/${user.entry_id}")
+                                                    .set(ratingReview)
+                                                    .then((value) {
+                                                  dbRef
+                                                      .child(
+                                                          "movies/${user.movie}/${user.entry_id}")
+                                                      .set(movieReview)
+                                                      .then((value) {
+                                                    Navigator
+                                                        .pushNamedAndRemoveUntil(
+                                                            context,
+                                                            "/",
+                                                            (Route<dynamic>
+                                                                    route) =>
+                                                                false);
+                                                  });
+                                                });
+                                              });
+                                            } else {
+                                              Navigator.pushNamedAndRemoveUntil(
+                                                  context,
+                                                  "/",
+                                                  (Route<dynamic> route) =>
+                                                      false);
+                                            }
+                                          });
                                         });
-                                      });
-                                    });
-                                  });
-                                } else if (changeMovieName == true) {
-                                  print("here");
-                                  //removes the entry in the movie db
-                                  dbRef
-                                      .child(
-                                          "movies/${user.movie}/${user.entry_id}")
-                                      .set(null)
-                                      .then((value) {
-                                    //adds a new entry into the movie db
-                                    dbRef
-                                        .child(
-                                            "movies/$movieName/${user.entry_id}")
-                                        .set(movieReview)
-                                        .then((value) {
-                                      dbRef
-                                          .child(
-                                              "ratings/${user.rating}/${user.entry_id}")
-                                          .set(ratingReview)
-                                          .then((value) {
-                                        Navigator.pushNamedAndRemoveUntil(
-                                            context,
-                                            "/",
-                                            (Route<dynamic> route) => false);
-                                      });
-                                    });
-                                  });
-                                } else if (changeRating == true) {
-                                  //removes the review from the rating db
-                                  dbRef
-                                      .child(
-                                          "ratings/${user.rating}/${user.entry_id}")
-                                      .set(null)
-                                      .then((value) {
-                                    //adds the new entry to the updated rating value
-                                    dbRef
-                                        .child(
-                                            "ratings/$rating/${user.entry_id}")
-                                        .set(ratingReview)
-                                        .then((value) {
-                                      dbRef
-                                          .child(
-                                              "movies/${user.movie}/${user.entry_id}")
-                                          .set(movieReview)
-                                          .then((value) {
-                                        Navigator.pushNamedAndRemoveUntil(
-                                            context,
-                                            "/",
-                                            (Route<dynamic> route) => false);
-                                      });
-                                    });
-                                  });
-                                }
-                                Navigator.pushNamedAndRemoveUntil(context, "/",
-                                    (Route<dynamic> route) => false);
-                              });
-                            });
-                          }
+                                      }
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         },
                         child: const Text('Submit'),
                       ),
