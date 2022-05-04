@@ -3,12 +3,14 @@ import 'package:firebase_database/firebase_database.dart';
 import '../models/UserReviewModel.dart';
 import '../widget/ListCard.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../screens/EditPostScreen.dart';
 
 class buildMovieReviewList extends ListCard<UserReviewModel> {
-  buildMovieReviewList(this.db, this.uid, this.context);
+  buildMovieReviewList(this.db, this.uid, this.user, this.context);
 
   DatabaseReference db;
   String uid;
+  String user;
   BuildContext context;
 
   @override
@@ -46,73 +48,89 @@ class buildMovieReviewList extends ListCard<UserReviewModel> {
       //   ),
       // ),
       Text(cardItem.user),
-      GestureDetector(
-        onTap: () {
-          showDialog(
-            context: context,
-            barrierDismissible: true,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text("Delete Review"),
-                content: const Text("Do you want to delete your post?"),
-                actions: [
-                  TextButton(
-                    child: const Text(
-                      "No",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  TextButton(
-                    child: const Text(
-                      "Yes",
-                      style: TextStyle(color: Colors.red),
-                    ),
-                    onPressed: () {
-                      db
-                          .child("movie_reviews/${cardItem.entry_id}")
-                          .remove()
-                          .then((value) {
-                        db
-                            .child("user_reviews/$uid/${cardItem.entry_id}")
-                            .remove()
-                            .then((value) {
+      //edit button
+      Row(
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => EditPostScreen(
+                          userReview: cardItem, db: db, uid: uid, user: user)));
+            },
+            child: const Icon(Icons.edit),
+          ),
+          //delete button
+          GestureDetector(
+            onTap: () {
+              showDialog(
+                context: context,
+                barrierDismissible: true,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text("Delete Review"),
+                    content: const Text("Do you want to delete your post?"),
+                    actions: [
+                      TextButton(
+                        child: const Text(
+                          "No",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      TextButton(
+                        child: const Text(
+                          "Yes",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                        onPressed: () {
                           db
-                              .child(
-                                  "movies/${cardItem.movie}/${cardItem.entry_id}")
+                              .child("movie_reviews/${cardItem.entry_id}")
                               .remove()
                               .then((value) {
                             db
-                                .child(
-                                    "ratings/${cardItem.rating}/${cardItem.entry_id}")
+                                .child("user_reviews/$uid/${cardItem.entry_id}")
                                 .remove()
                                 .then((value) {
-                              Navigator.pushNamedAndRemoveUntil(context, "/",
-                                  (Route<dynamic> route) => false);
+                              db
+                                  .child(
+                                      "movies/${cardItem.movie}/${cardItem.entry_id}")
+                                  .remove()
+                                  .then((value) {
+                                db
+                                    .child(
+                                        "ratings/${cardItem.rating}/${cardItem.entry_id}")
+                                    .remove()
+                                    .then((value) {
+                                  Navigator.pushNamedAndRemoveUntil(context,
+                                      "/", (Route<dynamic> route) => false);
+                                });
+                              });
                             });
+                          }).catchError((e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Failed to Delete Review!')),
+                            );
+                            Navigator.pop(context);
                           });
-                        });
-                      }).catchError((e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Failed to Delete Review!')),
-                        );
-                        Navigator.pop(context);
-                      });
-                    },
-                  ),
-                ],
+                        },
+                      ),
+                    ],
+                  );
+                },
               );
             },
-          );
-        },
-        child: const Icon(
-          Icons.delete,
-          color: Colors.red,
-          size: 30,
-        ),
+            child: const Icon(
+              Icons.delete,
+              color: Colors.red,
+              size: 30,
+            ),
+          )
+        ],
       ),
     ]);
   }
@@ -170,7 +188,7 @@ class _userPostScreen extends State<userPostScreen> {
               fontSize: 48,
             )),
       ),
-      body: buildMovieReviewList(ref, widget.uid, context)
+      body: buildMovieReviewList(ref, widget.uid, widget.user, context)
           .createListCards(userReviews),
     );
   }
