@@ -4,6 +4,7 @@ import 'package:movie_app/widget/MovieReviewList.dart';
 import 'package:provider/provider.dart';
 import 'package:movie_app/provider/googleProvider.dart';
 import '../screens/userPostScreen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class userScreen extends StatelessWidget {
   userScreen({Key? key}) : super(key: key);
@@ -17,8 +18,13 @@ class userScreen extends StatelessWidget {
         child: Consumer<GoogleSignInProvider>(
           builder: (context, value, child) => Scaffold(
             appBar: AppBar(
-              title: const Text("Movie App"),
-              centerTitle: true,
+              title: Text("MOVIE APP",
+                  textAlign: TextAlign.left,
+                  style: GoogleFonts.libreBarcode39ExtendedText(
+                    color: Colors.white,
+                    fontSize: 48,
+                  )),
+              // centerTitle: true,
               actions: [
                 ElevatedButton(
                     onPressed: () {

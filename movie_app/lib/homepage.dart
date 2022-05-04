@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/screens/userScreen.dart';
 import 'widget/MovieReviewList.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,8 +22,12 @@ class HomePage extends StatelessWidget {
         } else {
           return Scaffold(
             appBar: AppBar(
-              title: const Text("Movie App"),
-              centerTitle: true,
+              title: Text("MOVIE APP",
+                  style: GoogleFonts.libreBarcode39ExtendedText(
+                    color: Colors.white,
+                    fontSize: 48,
+                  )),
+              // centerTitle: true,
               actions: [
                 ElevatedButton(
                     onPressed: () {
