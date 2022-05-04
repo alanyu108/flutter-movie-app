@@ -25,7 +25,9 @@ class buildMovieReviewList extends ListCard<MovieReviewModel> {
       //     decoration: TextDecoration.underline,
       //   ),
       // ),
-      Text(cardItem.rating.toString() + ' stars'),
+      Text(
+        cardItem.rating.toString() + ' stars',
+      ),
       // const Text(
       //   "Review:",
       //   style: TextStyle(
@@ -39,7 +41,11 @@ class buildMovieReviewList extends ListCard<MovieReviewModel> {
       //     decoration: TextDecoration.underline,
       //   ),
       // ),
-      Text(cardItem.user)
+      Padding(padding: EdgeInsets.all(15)),
+      // Container(
+      //   alignment: Alignment(0.0, -1.0),
+      // ),
+      Text(cardItem.user, textAlign: TextAlign.right)
     ]);
   }
 }

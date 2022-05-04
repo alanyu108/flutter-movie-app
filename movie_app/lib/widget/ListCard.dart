@@ -28,9 +28,11 @@ abstract class ListCard<T> {
                         child: Image.asset('assets/images/inception.jpeg',
                             height: 222),
                       ),
+                      SizedBox(width: 15),
                       Flexible(
                         child: createCard(snapshot.data![index]),
-                      )
+                      ),
+                      SizedBox(width: 13),
                     ]));
               });
         } else if (snapshot.hasError) {
