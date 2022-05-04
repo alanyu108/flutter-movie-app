@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class reviewScreen extends StatefulWidget {
   const reviewScreen({Key? key}) : super(key: key);
@@ -29,9 +31,15 @@ class _reviewScreenState extends State<reviewScreen> {
   }
 }
 
+enum ImageSourceType { gallery, camera }
+
 // Create a Form widget.
 class MyCustomForm extends StatefulWidget {
   const MyCustomForm({Key? key}) : super(key: key);
+  void _handleURLButtonPress(BuildContext context, var type) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => ImageFromGalleryEx(type)));
+  }
 
   @override
   MyCustomFormState createState() {
@@ -39,9 +47,92 @@ class MyCustomForm extends StatefulWidget {
   }
 }
 
+class ImageFromGalleryEx extends StatefulWidget {
+  final type;
+  ImageFromGalleryEx(this.type);
+
+  @override
+  ImageFromGalleryExState createState() => ImageFromGalleryExState(this.type);
+}
+
+class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
+  var _image;
+  var imagePicker;
+  var type;
+
+  ImageFromGalleryExState(this.type);
+
+  @override
+  void initState() {
+    super.initState();
+    imagePicker = new ImagePicker();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+          title: Text(type == ImageSourceType.camera
+              ? "Image from Camera"
+              : "Image from Gallery")),
+      body: Column(
+        children: <Widget>[
+          SizedBox(
+            height: 52,
+          ),
+          Center(
+            child: GestureDetector(
+              onTap: () async {
+                var source = type == ImageSourceType.camera
+                    ? ImageSource.camera
+                    : ImageSource.gallery;
+                XFile image = await imagePicker.pickImage(
+                    source: source,
+                    imageQuality: 50,
+                    preferredCameraDevice: CameraDevice.front);
+                setState(() {
+                  _image = File(image.path);
+                });
+              },
+              child: Container(
+                width: 200,
+                height: 200,
+                decoration:
+                    BoxDecoration(color: Color.fromARGB(255, 230, 217, 217)),
+                child: _image != null
+                    ? Image.file(
+                        _image,
+                        width: 200.0,
+                        height: 200.0,
+                        fit: BoxFit.fitHeight,
+                      )
+                    : Container(
+                        decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 220, 211, 211)),
+                        width: 200,
+                        height: 200,
+                        child: Icon(
+                          Icons.camera_alt,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
 // Create a corresponding State class.
 // This class holds data related to the form.
 class MyCustomFormState extends State<MyCustomForm> {
+  void _handleURLButtonPress(BuildContext context, var type) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => ImageFromGalleryEx(type)));
+  }
+
   // Create a global key that uniquely identifies the Form widget
   // and allows validation of the form.
   final _formKey = GlobalKey<FormState>();
@@ -142,6 +233,21 @@ class MyCustomFormState extends State<MyCustomForm> {
                   );
                 }).toList(),
               )
+            ],
+          ),
+          Row(
+            children: [
+              MaterialButton(
+                color: Color.fromARGB(255, 70, 70, 70),
+                child: Text(
+                  "Pick Image from Gallery",
+                  style: TextStyle(
+                      color: Colors.white70, fontWeight: FontWeight.bold),
+                ),
+                onPressed: () {
+                  _handleURLButtonPress(context, ImageSourceType.gallery);
+                },
+              ),
             ],
           ),
           Padding(
