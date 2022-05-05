@@ -1,16 +1,17 @@
 class UserReviewModel {
-  UserReviewModel({
-    required this.user,
-    required this.rating,
-    required this.movie,
-    required this.review,
-  });
+  UserReviewModel(
+      {required this.user,
+      required this.rating,
+      required this.movie,
+      required this.review,
+      required this.picUrl});
 
   String user;
   String movie;
   String review;
   int rating;
   String entry_id = "";
+  String picUrl;
 
   factory UserReviewModel.fromList(Object? dbData) {
     List<dynamic> reviewData = [];
@@ -20,11 +21,11 @@ class UserReviewModel {
     });
 
     return UserReviewModel(
-      movie: reviewData[0],
-      review: reviewData[1],
-      rating: reviewData[2],
-      user: reviewData[3],
-    );
+        movie: reviewData[0],
+        review: reviewData[1],
+        rating: reviewData[2],
+        user: reviewData[3],
+        picUrl: reviewData[4]);
   }
 
   void setEntryID(String id) {

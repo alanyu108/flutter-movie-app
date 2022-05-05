@@ -7,47 +7,54 @@ import 'package:google_fonts/google_fonts.dart';
 class buildMovieReviewList extends ListCard<MovieReviewModel> {
   @override
   Widget createCard(MovieReviewModel cardItem) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    return Row(children: [
       // Text(
       //   "Movie:",
       //   // style: TextStyle(
       //   //   decoration: TextDecoration.underline,
       //   // style: GoogleFonts.kaiseiTokumin(fontSize: 24),
-      // ),
-      Text(
-        cardItem.movie,
-        style: GoogleFonts.kaiseiTokumin(
-            fontSize: 26, color: Color.fromARGB(255, 52, 52, 52)),
-      ),
-      // const Text(
-      //   "Rating:",
-      //   style: TextStyle(
-      //     decoration: TextDecoration.underline,
-      //   ),
-      // ),
-      Text(
-        cardItem.rating.toString() + ' stars',
-      ),
-      // const Text(
-      //   "Review:",
-      //   style: TextStyle(
-      //     decoration: TextDecoration.underline,
-      //   ),
-      // ),
-      Text(cardItem.review),
-      // const Text(
-      //   "By:",
-      //   style: TextStyle(
-      //     decoration: TextDecoration.underline,
-      //   ),
-      // ),
-      Padding(padding: EdgeInsets.all(15)),
-      // Container(
-      //   alignment: Alignment(0.0, -1.0),
-      // ),
-      Text(cardItem.user, textAlign: TextAlign.right)
-    ]);
-  }
+      Image.network(cardItem.picUrl, height: 222),
+      Padding(padding: EdgeInsets.all(4)),
+      Flexible(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(
+          cardItem.movie,
+          style: GoogleFonts.kaiseiTokumin(
+              fontSize: 26, color: Color.fromARGB(255, 52, 52, 52)),
+        ),
+        // const Text(
+        //   "Rating:",
+        //   style: TextStyle(
+        //     decoration: TextDecoration.underline,
+        //   ),
+        // ),
+        Text(
+          cardItem.rating.toString() + ' stars',
+        ),
+        // const Text(
+        //   "Review:",
+        //   style: TextStyle(
+        //     decoration: TextDecoration.underline,
+        //   ),
+        // ),
+        Text(cardItem.review),
+        // const Text(
+        //   "By:",
+        //   style: TextStyle(
+        //     decoration: TextDecoration.underline,
+        //   ),
+        // ),
+        // Padding(padding: EdgeInsets.only(bottom: 8)),
+        // Container(
+        //   alignment: Alignment(0.0, -1.0),
+        // ),
+        Text('-' + cardItem.user),
+      ] //children
+                  ))
+    ] //children
+        );
+  } //end widget
 }
 
 class MovieReviewList extends StatefulWidget {
