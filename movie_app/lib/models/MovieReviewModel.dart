@@ -1,17 +1,18 @@
 class MovieReviewModel {
-  MovieReviewModel({
-    required this.uid,
-    required this.movie,
-    required this.review,
-    required this.rating,
-    required this.user,
-  });
+  MovieReviewModel(
+      {required this.uid,
+      required this.movie,
+      required this.review,
+      required this.rating,
+      required this.user,
+      required this.picUrl});
 
   String uid;
   String movie;
   String review;
   int rating;
   String user;
+  String picUrl;
 
   factory MovieReviewModel.fromList(Object? dbData) {
     List<dynamic> reviewData = [];
@@ -21,12 +22,12 @@ class MovieReviewModel {
     });
 
     return MovieReviewModel(
-      uid: reviewData[0],
-      movie: reviewData[1],
-      review: reviewData[2],
-      rating: reviewData[3],
-      user: reviewData[4],
-    );
+        uid: reviewData[0],
+        movie: reviewData[1],
+        review: reviewData[2],
+        rating: reviewData[3],
+        user: reviewData[4],
+        picUrl: reviewData[5]);
   }
   // factory MovieReivewModel.fromJson(Map<String, dynamic> json) =>
   //     MovieReivewModel(
