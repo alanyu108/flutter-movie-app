@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'dart:math';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as Path;
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class reviewScreen extends StatefulWidget {
   const reviewScreen({Key? key}) : super(key: key);
@@ -26,7 +30,10 @@ class _reviewScreenState extends State<reviewScreen> {
         title: const Text("Add a review"),
         centerTitle: true,
       ),
-      body: const MyCustomForm(),
+      body: Padding(
+          padding:
+              EdgeInsets.only(left: 20.0, top: 10.0, right: 20.0, bottom: 10.0),
+          child: const MyCustomForm()),
     );
   }
 }
@@ -36,10 +43,6 @@ enum ImageSourceType { gallery, camera }
 // Create a Form widget.
 class MyCustomForm extends StatefulWidget {
   const MyCustomForm({Key? key}) : super(key: key);
-  void _handleURLButtonPress(BuildContext context, var type) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ImageFromGalleryEx(type)));
-  }
 
   @override
   MyCustomFormState createState() {
@@ -47,92 +50,9 @@ class MyCustomForm extends StatefulWidget {
   }
 }
 
-class ImageFromGalleryEx extends StatefulWidget {
-  final type;
-  ImageFromGalleryEx(this.type);
-
-  @override
-  ImageFromGalleryExState createState() => ImageFromGalleryExState(this.type);
-}
-
-class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
-  var _image;
-  var imagePicker;
-  var type;
-
-  ImageFromGalleryExState(this.type);
-
-  @override
-  void initState() {
-    super.initState();
-    imagePicker = new ImagePicker();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: Text(type == ImageSourceType.camera
-              ? "Image from Camera"
-              : "Image from Gallery")),
-      body: Column(
-        children: <Widget>[
-          SizedBox(
-            height: 52,
-          ),
-          Center(
-            child: GestureDetector(
-              onTap: () async {
-                var source = type == ImageSourceType.camera
-                    ? ImageSource.camera
-                    : ImageSource.gallery;
-                XFile image = await imagePicker.pickImage(
-                    source: source,
-                    imageQuality: 50,
-                    preferredCameraDevice: CameraDevice.front);
-                setState(() {
-                  _image = File(image.path);
-                });
-              },
-              child: Container(
-                width: 200,
-                height: 200,
-                decoration:
-                    BoxDecoration(color: Color.fromARGB(255, 230, 217, 217)),
-                child: _image != null
-                    ? Image.file(
-                        _image,
-                        width: 200.0,
-                        height: 200.0,
-                        fit: BoxFit.fitHeight,
-                      )
-                    : Container(
-                        decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 220, 211, 211)),
-                        width: 200,
-                        height: 200,
-                        child: Icon(
-                          Icons.camera_alt,
-                          color: Colors.grey[800],
-                        ),
-                      ),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
-
 // Create a corresponding State class.
 // This class holds data related to the form.
 class MyCustomFormState extends State<MyCustomForm> {
-  void _handleURLButtonPress(BuildContext context, var type) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ImageFromGalleryEx(type)));
-  }
-
   // Create a global key that uniquely identifies the Form widget
   // and allows validation of the form.
   final _formKey = GlobalKey<FormState>();
@@ -151,7 +71,16 @@ class MyCustomFormState extends State<MyCustomForm> {
         .join();
   }
 
+  var _image;
+  var imagePicker;
+  var type;
+
   @override
+  void initState() {
+    super.initState();
+    imagePicker = new ImagePicker();
+  }
+
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
     return Form(
@@ -217,8 +146,10 @@ class MyCustomFormState extends State<MyCustomForm> {
               ),
               const Padding(padding: EdgeInsets.fromLTRB(5, 0, 5, 0)),
               DropdownButton<String>(
+                dropdownColor: Colors.black,
                 value: rating,
-                icon: const Icon(Icons.arrow_downward, color: Colors.white),
+                icon: const Icon(Icons.arrow_downward,
+                    color: Color.fromARGB(255, 255, 255, 255)),
                 elevation: 16,
                 onChanged: (String? newValue) {
                   setState(() {
@@ -229,30 +160,81 @@ class MyCustomFormState extends State<MyCustomForm> {
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
-                    child: Text(value, style: TextStyle(color: Colors.blue)),
+                    child: Text(value,
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 255, 255, 255))),
                   );
                 }).toList(),
               )
             ],
           ),
-          Row(
-            children: [
-              MaterialButton(
-                color: Color.fromARGB(255, 70, 70, 70),
-                child: Text(
-                  "Pick Image from Gallery",
-                  style: TextStyle(
-                      color: Colors.white70, fontWeight: FontWeight.bold),
-                ),
-                onPressed: () {
-                  _handleURLButtonPress(context, ImageSourceType.gallery);
-                },
+          Column(
+            children: <Widget>[
+              SizedBox(
+                height: 52,
               ),
+              Center(
+                child: GestureDetector(
+                  onTap: () async {
+                    var source = type == ImageSourceType.camera
+                        ? ImageSource.camera
+                        : ImageSource.gallery;
+                    XFile image = await imagePicker.pickImage(
+                        source: source,
+                        imageQuality: 50,
+                        preferredCameraDevice: CameraDevice.front);
+
+                    setState(() {
+                      _image = File(image.path);
+                    });
+                    await Firebase.initializeApp();
+                    String imageUrl;
+
+                    Reference reference = FirebaseStorage.instance
+                        .ref()
+                        .child('profileImage/${Path.basename(_image.path)}');
+                    UploadTask uploadTask = reference.putFile(_image);
+                    TaskSnapshot snapshot = await uploadTask;
+                    imageUrl = await snapshot.ref.getDownloadURL();
+                    print(imageUrl);
+                  },
+                  child: Container(
+                    width: 200,
+                    height: 200,
+                    decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 230, 217, 217)),
+                    child: _image != null
+                        ? Image.file(
+                            _image,
+                            width: 200.0,
+                            height: 200.0,
+                            fit: BoxFit.fitHeight,
+                          )
+                        : Container(
+                            decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 220, 211, 211)),
+                            width: 200,
+                            height: 200,
+                            child: Icon(
+                              Icons.camera_alt,
+                              color: Colors.grey[800],
+                            ),
+                          ),
+                  ),
+                ),
+              )
             ],
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 5.0, horizontal: 130.0),
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  primary: Color.fromARGB(255, 108, 3, 3),
+                  onPrimary: Colors.white,
+                  alignment: Alignment.center,
+                  textStyle: GoogleFonts.sourceCodePro(
+                      fontSize: 14, letterSpacing: 1.2)),
               onPressed: () {
                 // Validate returns true if the form is valid, or false otherwise.
                 if (_formKey.currentState!.validate()) {
@@ -322,7 +304,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                   });
                 }
               },
-              child: const Text('Submit'),
+              child: const Text('SUBMIT'),
             ),
           ),
         ],

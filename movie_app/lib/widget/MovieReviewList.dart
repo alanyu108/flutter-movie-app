@@ -41,11 +41,11 @@ class buildMovieReviewList extends ListCard<MovieReviewModel> {
       //     decoration: TextDecoration.underline,
       //   ),
       // ),
-      Padding(padding: EdgeInsets.all(15)),
+      // Padding(padding: EdgeInsets.only(bottom: 8)),
       // Container(
       //   alignment: Alignment(0.0, -1.0),
       // ),
-      Text(cardItem.user, textAlign: TextAlign.right)
+      Text('-' + cardItem.user)
     ]);
   }
 }
