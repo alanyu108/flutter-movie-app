@@ -61,6 +61,7 @@ class MyCustomFormState extends State<MyCustomForm> {
   String rating = "1";
   String movieName = "";
   String review = "";
+  String picUrl = "";
   DatabaseReference ref = FirebaseDatabase.instance.ref();
 
   String _generateRandomString(int len) {
@@ -171,7 +172,7 @@ class MyCustomFormState extends State<MyCustomForm> {
           Column(
             children: <Widget>[
               SizedBox(
-                height: 52,
+                height: 5,
               ),
               Center(
                 child: GestureDetector(
@@ -188,15 +189,19 @@ class MyCustomFormState extends State<MyCustomForm> {
                       _image = File(image.path);
                     });
                     await Firebase.initializeApp();
-                    String imageUrl;
 
                     Reference reference = FirebaseStorage.instance
                         .ref()
-                        .child('profileImage/${Path.basename(_image.path)}');
+                        .child('movieImages/${Path.basename(_image.path)}');
                     UploadTask uploadTask = reference.putFile(_image);
                     TaskSnapshot snapshot = await uploadTask;
-                    imageUrl = await snapshot.ref.getDownloadURL();
-                    print(imageUrl);
+                    picUrl = await snapshot.ref.getDownloadURL();
+                    // picUrl = imageUrl;
+                    // setState(() {
+                    //   picUrl = imageUrl;
+                    // });
+
+                    print(picUrl);
                   },
                   child: Container(
                     width: 200,
@@ -253,14 +258,16 @@ class MyCustomFormState extends State<MyCustomForm> {
                     "uid": user.uid,
                     "rating": int.parse(rating),
                     "movie": movieName,
-                    "review": review
+                    "review": review,
+                    "url": picUrl
                   };
 
                   final userReview = <String, dynamic>{
                     "user": user.displayName,
                     "rating": int.parse(rating),
                     "movie": movieName,
-                    "review": review
+                    "review": review,
+                    "url": picUrl
                   };
 
                   final movieReview = <String, dynamic>{
@@ -268,14 +275,23 @@ class MyCustomFormState extends State<MyCustomForm> {
                     "uid": user.uid,
                     "rating": int.parse(rating),
                     "review": review,
+                    "url": picUrl
                   };
 
                   final ratingReview = <String, dynamic>{
                     "user": user.displayName,
                     "uid": user.uid,
                     "movie": movieName,
-                    "review": review
+                    "review": review,
+                    "url": picUrl
                   };
+
+                  // final imageUrl_ = <String, dynamic>{
+                  //   "user": user.displayName,
+                  //   "uid": user.uid,
+                  //   "movie": movieName,
+                  //   "review": review,
+                  // };
 
                   ref
                       .child("movie_reviews/${uid}")
@@ -293,9 +309,14 @@ class MyCustomFormState extends State<MyCustomForm> {
                             .child("ratings/$rating/$uid")
                             .set(ratingReview)
                             .then((value) {
+                          // ref
+                          //     .child("photos/$imageUrl_/$uid")
+                          //     .set(picUrl)
+                          //     .then((value) {
                           ScaffoldMessenger.of(context).clearSnackBars();
                           Navigator.pushNamedAndRemoveUntil(
                               context, "/", (Route<dynamic> route) => false);
+                          // });
                         });
                       });
                     });
