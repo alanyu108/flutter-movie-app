@@ -23,16 +23,9 @@ abstract class ListCard<T> {
                         // border: Border.all(color: Colors.redAccent),
                         color: const Color(0xFFF5FDFF)),
                     child: Row(children: [
-                      // SizedBox(
-                      //   height: 222,
-                      //   child: Image.asset('assets/images/inception.jpeg',
-                      //       height: 222),
-                      // ),
-                      SizedBox(width: 15),
-                      Container(
+                      Flexible(
                         child: createCard(snapshot.data![index]),
                       ),
-                      SizedBox(width: 13),
                     ]));
               });
         } else if (snapshot.hasError) {

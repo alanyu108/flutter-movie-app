@@ -14,8 +14,10 @@ class buildMovieReviewList extends ListCard<MovieReviewModel> {
       //   //   decoration: TextDecoration.underline,
       //   // style: GoogleFonts.kaiseiTokumin(fontSize: 24),
       Image.network(cardItem.picUrl, height: 222),
-      Padding(padding: EdgeInsets.all(10)),
-      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Padding(padding: EdgeInsets.all(4)),
+      Flexible(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
           cardItem.movie,
           style: GoogleFonts.kaiseiTokumin(
@@ -48,10 +50,11 @@ class buildMovieReviewList extends ListCard<MovieReviewModel> {
         //   alignment: Alignment(0.0, -1.0),
         // ),
         Text('-' + cardItem.user),
-      ])
-      // ),
-    ]);
-  }
+      ] //children
+                  ))
+    ] //children
+        );
+  } //end widget
 }
 
 class MovieReviewList extends StatefulWidget {
