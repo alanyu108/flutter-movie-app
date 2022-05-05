@@ -22,7 +22,7 @@ class buildMovieReviewList extends ListCard<UserReviewModel> {
       //   //   decoration: TextDecoration.underline,
       //   // style: GoogleFonts.kaiseiTokumin(fontSize: 24),
       Image.network(cardItem.picUrl, height: 222),
-      Padding(padding: EdgeInsets.all(10)),
+      Padding(padding: EdgeInsets.all(4)),
       Flexible(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

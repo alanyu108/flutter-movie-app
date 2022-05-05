@@ -26,6 +26,7 @@ class _EditPostScreen extends State<EditPostScreen> {
   String rating = "";
   String movieName = "";
   String review = "";
+  String picUrl = "";
   bool changeRating = false;
   bool changeMovieName = false;
 
@@ -36,6 +37,7 @@ class _EditPostScreen extends State<EditPostScreen> {
     rating = widget.userReview.rating.toString();
     movieName = widget.userReview.movie;
     review = widget.userReview.review;
+    picUrl = widget.userReview.picUrl;
   }
 
   @override
@@ -217,7 +219,8 @@ class _EditPostScreen extends State<EditPostScreen> {
                                           "uid": widget.uid,
                                           "rating": int.parse(rating),
                                           "movie": movieName,
-                                          "review": review
+                                          "review": review,
+                                          "url": picUrl
                                         };
 
                                         final movieReview = <String, dynamic>{
@@ -225,20 +228,23 @@ class _EditPostScreen extends State<EditPostScreen> {
                                           "uid": widget.uid,
                                           "rating": int.parse(rating),
                                           "review": review,
+                                          "url": picUrl
                                         };
 
                                         final ratingReview = <String, dynamic>{
                                           "user": widget.user,
                                           "uid": widget.uid,
                                           "movie": movieName,
-                                          "review": review
+                                          "review": review,
+                                          "url": picUrl,
                                         };
 
                                         final userReview = <String, dynamic>{
                                           "user": widget.user,
                                           "rating": int.parse(rating),
                                           "movie": movieName,
-                                          "review": review
+                                          "review": review,
+                                          "url": picUrl
                                         };
 
                                         //updates the movie_reviews db
