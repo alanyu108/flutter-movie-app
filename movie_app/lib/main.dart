@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:movie_app/screens/signInScreen.dart';
 import 'homepage.dart';
 import 'firebase_options.dart'; // generated via `flutterfire` CLI
-import 'screens/addReviewScreen.dart';
+import 'screens/ReviewScreen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 Future<void> main() async {

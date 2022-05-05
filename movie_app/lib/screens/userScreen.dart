@@ -16,7 +16,7 @@ class userScreen extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (context) => GoogleSignInProvider(context: context),
         child: Consumer<GoogleSignInProvider>(
-          builder: (context, value, child) => Scaffold(
+          builder: (googleContext, value, child) => Scaffold(
             appBar: AppBar(
               title: Text("MOVIE APP",
                   textAlign: TextAlign.left,
@@ -28,10 +28,43 @@ class userScreen extends StatelessWidget {
               actions: [
                 ElevatedButton(
                     onPressed: () {
-                      final provider = Provider.of<GoogleSignInProvider>(
-                          context,
-                          listen: false);
-                      provider.googleLogout();
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text("Log out"),
+                            content:
+                                const Text("Are you sure you want to logout?"),
+                            actions: [
+                              TextButton(
+                                child: const Text(
+                                  "No",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              TextButton(
+                                child: const Text(
+                                  "Yes",
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                                onPressed: () {
+                                  final provider =
+                                      Provider.of<GoogleSignInProvider>(
+                                          googleContext,
+                                          listen: false);
+                                  provider.googleLogout();
+                                  Navigator.pushNamedAndRemoveUntil(context,
+                                      "/", (Route<dynamic> route) => false);
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     },
                     child: const Text("Logout"))
               ],
