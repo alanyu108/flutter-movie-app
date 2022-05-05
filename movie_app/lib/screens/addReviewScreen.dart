@@ -25,7 +25,7 @@ class _reviewScreenState extends State<reviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text("Add a review"),
         centerTitle: true,
