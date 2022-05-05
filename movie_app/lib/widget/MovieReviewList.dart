@@ -4,6 +4,7 @@ import '../models/MovieReviewModel.dart';
 import 'ListCard.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../screens/AuthorScreen.dart';
+import '../screens/MovieScreen.dart';
 
 class buildMovieReviewList extends ListCard<MovieReviewModel> {
   buildMovieReviewList({required this.context});
@@ -19,10 +20,18 @@ class buildMovieReviewList extends ListCard<MovieReviewModel> {
       //   //   decoration: TextDecoration.underline,
       //   // style: GoogleFonts.kaiseiTokumin(fontSize: 24),
       // ),
-      Text(
-        cardItem.movie,
-        style: GoogleFonts.kaiseiTokumin(
-            fontSize: 26, color: Color.fromARGB(255, 52, 52, 52)),
+      GestureDetector(
+        child: Text(
+          cardItem.movie,
+          style: GoogleFonts.kaiseiTokumin(
+              fontSize: 26, color: const Color.fromARGB(255, 52, 52, 52)),
+        ),
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MovieScreen(movie: cardItem.movie)));
+        },
       ),
       // const Text(
       //   "Rating:",
@@ -30,6 +39,7 @@ class buildMovieReviewList extends ListCard<MovieReviewModel> {
       //     decoration: TextDecoration.underline,
       //   ),
       // ),
+
       Text(
         cardItem.rating.toString() + ' stars',
       ),
